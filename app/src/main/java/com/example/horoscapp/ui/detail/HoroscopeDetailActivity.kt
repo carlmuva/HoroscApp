@@ -8,9 +8,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.navArgs
-import com.example.horoscapp.R
 import com.example.horoscapp.databinding.ActivityHoroscopeDetailBinding
-import com.example.horoscapp.databinding.ActivityMainBinding
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -25,6 +23,7 @@ class HoroscopeDetailActivity : AppCompatActivity() {
         binding = ActivityHoroscopeDetailBinding.inflate(layoutInflater)
         setContentView(binding.root)
         initUI()
+        horoscopeDetailViewModel.getHoroscope(args.type.name)
     }
 
     private fun initUI() {
@@ -40,7 +39,7 @@ class HoroscopeDetailActivity : AppCompatActivity() {
                         HoroscopeDetailState.Loading -> loadingState()
 
                         is HoroscopeDetailState.Error -> errorState()
-                        is HoroscopeDetailState.Success -> successState()
+                        is HoroscopeDetailState.Success -> successState(it)
                     }
                 }
             }
@@ -49,14 +48,17 @@ class HoroscopeDetailActivity : AppCompatActivity() {
 
 
     private fun loadingState() {
-
+        binding.pb.isVisible = true
     }
 
     private fun errorState() {
-        TODO("Not yet implemented")
+        binding.pb.isVisible = false
     }
 
-    private fun successState() {
-        TODO("Not yet implemented")
+    private fun successState(state: HoroscopeDetailState.Success) {
+        binding.pb.isVisible = false
+        binding.tvTitle.text =state.sign
+        binding.tvBody.text = state.prediction
+
     }
 }
